@@ -1,5 +1,5 @@
 <?php
-include('conexion.php');
+include('../conexion.php');
 include('funcionesCrud.php');
 
 $mensaje = null;
@@ -110,7 +110,7 @@ if (isset($_GET['msg'])) {
                         </div>
                         <div class="mb-3">
                             <label for="telefono" class="form-label">Teléfono</label>
-                            <input type="text" class="form-control" id="telefono" name="telefono">
+                            <input type="number" class="form-control" id="telefono" name="telefono">
                         </div>
                         <div class="mb-3">
                             <label for="genero" class="form-label">Género</label>
@@ -158,7 +158,8 @@ if (isset($_GET['msg'])) {
                         </div>
                         <div class="mb-3">
                             <label for="telefonoEditar" class="form-label">Teléfono</label>
-                            <input type="text" class="form-control" id="telefonoEditar" name="telefono">
+                            <input type="number
+                            "class="form-control" id="telefonoEditar" name="telefono">
                         </div>
                         <div class="mb-3">
                             <label for="generoEditar" class="form-label">Género</label>

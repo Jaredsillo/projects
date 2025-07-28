@@ -1,5 +1,5 @@
 <?php
-include('conexion.php');
+include('../conexion.php');
 
 // Leer alumnos
 function obtenerAlumnos($conexion) {
