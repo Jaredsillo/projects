@@ -3,12 +3,9 @@ include('conexion.php');
 include('funcionesCrud.php');
 
 $mensaje = null;
-//Eliminar alumno
-if (isset($_GET['eliminar'])) {
-    $mensaje = eliminarAlumno($conexion, $_GET['eliminar']);
-    header("Location: index.php?msg=" . urlencode(json_encode($mensaje))); 
-    exit;
-}
+// Leer alumnos
+$alumnos = obtenerAlumnos($conexion);
+
 //Agregar alumno
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['accion'])) {
     $mensaje = agregarAlumno($conexion, $_POST);
@@ -21,12 +18,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
     header("Location: index.php?msg=" . urlencode(json_encode($mensaje)));
     exit;
 }
+//Eliminar alumno
+if (isset($_GET['eliminar'])) {
+    $mensaje = eliminarAlumno($conexion, $_GET['eliminar']);
+    header("Location: index.php?msg=" . urlencode(json_encode($mensaje))); 
+    exit;
+}
 // Mostrar mensaje si existe en la URL
 if (isset($_GET['msg'])) {
     $mensaje = json_decode($_GET['msg'], true);
 }
-// Leer alumnos
-$alumnos = obtenerAlumnos($conexion);
 ?>
 
 <!DOCTYPE html>
@@ -119,12 +120,14 @@ $alumnos = obtenerAlumnos($conexion);
                                 <option value="femenino">Femenino</option>
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="estatus" class="form-label">Estatus</label>
-                            <select class="form-select" id="estatus" name="estatus">
-                                <option value="1">Activo</option>
-                                <option value="0">Inactivo</option>
-                            </select>
+                        <div hidden="hidden">
+                            <div class="mb-3">
+                                <label for="estatus" class="form-label">Estatus</label>
+                                <select class="form-select" id="estatus" name="estatus">
+                                    <option value="1">Activo</option>
+                                    <!-- <option value="0">Inactivo</option> -->
+                                </select>
+                            </div>
                         </div>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                         <button type="submit" class="btn btn-primary">Guardar</button>
@@ -197,8 +200,8 @@ $alumnos = obtenerAlumnos($conexion);
             e.preventDefault();
             let matricula = this.getAttribute('data-id');
             Swal.fire({
-                title: "¿Eliminar?",
-                text: "¿Seguro que deseas eliminar este alumno?",
+                title: "Seguro que deseas eliminar este alumno?",
+                // text: "¿Seguro que deseas eliminar este alumno?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
