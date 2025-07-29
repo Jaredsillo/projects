@@ -1,49 +1,41 @@
-use prueba;
+-- Elimina la BD si existe
+DROP DATABASE IF EXISTS practica1;
 
+-- Crea la BD
+CREATE DATABASE practica1 CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
+-- Usa la BD
+USE practica1;
+
+-- Tabla ALUMNOS
 CREATE TABLE ALUMNOS (
-    matricula VARCHAR(20) PRIMARY KEY, 
-    nombre VARCHAR(50)
+    matricula VARCHAR(20) PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL
 );
 
+-- Tabla DETALLE_ALUMNOS
 CREATE TABLE DETALLE_ALUMNOS (
     matricula VARCHAR(20),
-    correo varchar (30),
+    correo VARCHAR(30),
     telefono VARCHAR(10),
     genero ENUM('masculino', 'femenino'),
     estatus TINYINT(1) NOT NULL DEFAULT 1,
     CONSTRAINT fk_DETALLE_ALUMNOS FOREIGN KEY (matricula) REFERENCES ALUMNOS(matricula)
 );
 
-INSERT INTO ALUMNOS (matricula, nombre) VALUES 
-('A001', 'Juan Pérez'),
-('A002', 'María López'),
-('A003', 'Luis Martínez'),
-('A004', 'Ana Gómez'),
-('A005', 'Carlos Ramírez'),
-('A006', 'Laura Fernández'),
-('A007', 'Pedro Morales'),
-('A008', 'Carmen Sánchez'),
-('A009', 'Diego Torres'),
-('A010', 'Sofía Rivas');
+-- Datos de ejemplo en ALUMNOS
+INSERT INTO ALUMNOS (matricula, nombre) VALUES
+('202504036', 'Jared Vazquez'),
+('202501001', 'Luis Martínez'),
+('202501002', 'Ana López'),
+('202501003', 'Carlos Pérez');
 
-INSERT INTO DETALLE_ALUMNOS (matricula, correo, telefono, genero, estatus) VALUES 
-('A001', 'juan.perez@email.com', '5512345678', 'masculino', 1),
-('A002', 'maria.lopez@email.com', '5523456789', 'femenino', 1),
-('A003', 'luis.mtz@email.com', '5534567890', 'masculino', 1),
-('A004', 'ana.gomez@email.com', '5545678901', 'femenino', 1),
-('A005', 'carlos.ramirez@email.com', '5556789012', 'masculino', 0),
-('A006', 'laura.fernandez@email.com', '5567890123', 'femenino', 1),
-('A007', 'pedro.morales@email.com', '5578901234', 'masculino', 1),
-('A008', 'carmen.sanchez@email.com', '5589012345', 'femenino', 0),
-('A009', 'diego.torres@email.com', '5590123456', 'masculino', 1),
-('A010', 'sofia.rivas@email.com', '5501234567', 'femenino', 1);
-
-select * from alumnos order by nombre desc, matricula;
-select * from detalle_alumnos;
-select a.matricula, a.nombre, d.correo, d.telefono, d.genero, d.estatus 
-from alumnos a join detalle_alumnos d on a.matricula = d.matricula;
-
--- nuevas tablas
+-- Datos de ejemplo en DETALLE_ALUMNOS
+INSERT INTO DETALLE_ALUMNOS (matricula, correo, telefono, genero, estatus) VALUES
+('202504036', 'jared.vazquez@mail.com', '7441234567', 'masculino', 1),
+('202501001', 'luis.martinez@mail.com', '7442233445', 'masculino', 1),
+('202501002', 'ana.lopez@mail.com', '7445566778', 'femenino', 1),
+('202501003', 'carlos.perez@mail.com', '7449988776', 'masculino', 0);
 
 create table MATERIAS (
 	clave varchar(20) primary key,
@@ -56,87 +48,48 @@ create table CARRERAS(
 	nombre varchar(100)
 );
 
-CREATE TABLE GRUPO (
-    clave VARCHAR(20) PRIMARY KEY, -- id
-    materia VARCHAR(100),
-    carrera VARCHAR(100),
-    CONSTRAINT fk_MATERIAS FOREIGN KEY (materia) REFERENCES MATERIAS(clave),
-    CONSTRAINT fk_CARRERAS FOREIGN KEY (carrera) REFERENCES CARRERAS(clave)
-);
-
-alter table GRUPO drop column clave; -- eliminar un campo(columna)
-alter table GRUPO add id int auto_increment primary key; -- se agrego un id autoincremental
-alter table GRUPO drop foreign key fk_MATERIAS;
-alter table GRUPO add constraint fk_MATERIAS foreign key () references GRUPO () on delete cascade on update cascade;
-
-
--- poner id autoincremental al rgrupo y corregir el 
-INSERT INTO CARRERAS (clave, nombre) VALUES 
-('CAR001', 'Ingeniería en Sistemas Computacionales'),
-('CAR002', 'Ingeniería Industrial'),
-('CAR003', 'Administración de Empresas'),
-('CAR004', 'Contaduría Pública'),
-('CAR005', 'Ingeniería Mecánica');
-INSERT INTO MATERIAS (clave, nombre, semestre) VALUES 
-('MAT001', 'Programación I', '1'),
-('MAT002', 'Álgebra Lineal', '2'),
-('MAT003', 'Contabilidad Básica', '1'),
-('MAT004', 'Electrónica Digital', '3'),
-('MAT005', 'Estadística', '2');
-INSERT INTO GRUPO (id, clave, Clave) VALUES 
-('GRP001', 'MAT001', 'CAR001'), -- Programación I - Sistemas
-('GRP002', 'MAT002', 'CAR001'), -- Álgebra Lineal - Sistemas
-('GRP003', 'MAT003', 'CAR003'), -- Contabilidad - Administración
-('GRP004', 'MAT003', 'CAR004'), -- Contabilidad - Contaduría
-('GRP005', 'MAT004', 'CAR001'), -- Electrónica - Sistemas
-('GRP006', 'MAT005', 'CAR002'), -- Estadística - Industrial
-('GRP007', 'MAT002', 'CAR002'), -- Álgebra Lineal - Industrial
-('GRP008', 'MAT005', 'CAR003'), -- Estadística - Administración
-('GRP009', 'MAT001', 'CAR005'), -- Programación - Mecánica
-('GRP010', 'MAT004', 'CAR005'); -- Electrónica - Mecánica
-
-select * from materias;
-select * from carreras;
-select * from grupo;
-drop table grupo;
-
-SELECT 
-    GRUPO.id AS grupo,
-    MATERIAS.clave AS materiaC,
-    MATERIAS.nombre AS materia,
-    MATERIAS.semestre,
-    CARRERAS.nombre AS carrera
-FROM GRUPO
-INNER JOIN MATERIAS ON GRUPO.materia = MATERIAS.clave
-INNER JOIN CARRERAS ON GRUPO.carrera = CARRERAS.clave;
-
-
 CREATE TABLE GRUPOS (
-    idGrupo int PRIMARY KEY, -- id
-    claveM VARCHAR(100),
-    claveC VARCHAR(100),
+    idGrupo INT AUTO_INCREMENT PRIMARY KEY,
+    claveM VARCHAR(20),
+    claveC VARCHAR(20),
     FOREIGN KEY (claveM) REFERENCES MATERIAS(clave),
     FOREIGN KEY (claveC) REFERENCES CARRERAS(clave)
 );
-alter table GRUPOS drop column idGrupo; 
-alter table GRUPOS add idGrupo int auto_increment primary key;
 
-INSERT INTO GRUPOS (idGrupo, claveM, claveC) VALUES
-(1, 'MAT001', 'CAR001'), -- Programación I - Sistemas
-(2, 'MAT002', 'CAR001'), -- Álgebra Lineal - Sistemas
-(3, 'MAT003', 'CAR003'), -- Contabilidad Básica - Administración
-(4, 'MAT003', 'CAR004'), -- Contabilidad Básica - Contaduría
-(5, 'MAT004', 'CAR001'), -- Electrónica Digital - Sistemas
-(6, 'MAT005', 'CAR002'), -- Estadística - Industrial
-(7, 'MAT002', 'CAR002'), -- Álgebra Lineal - Industrial
-(8, 'MAT005', 'CAR003'), -- Estadística - Administración
-(9, 'MAT001', 'CAR005'), -- Programación I - Mecánica
-(10, 'MAT004', 'CAR005'); -- Electrónica Digital - Mecánica
+INSERT INTO MATERIAS (clave, nombre, semestre) VALUES
+('MAT101', 'Álgebra Lineal', '1'),
+('MAT102', 'Cálculo Diferencial', '1'),
+('MAT201', 'Cálculo Integral', '2'),
+('INF101', 'Fundamentos de Programación', '1'),
+('INF201', 'Estructura de Datos', '2'),
+('INF301', 'Base de Datos', '3'),
+('ADM101', 'Fundamentos de Administración', '1'),
+('ADM201', 'Contabilidad Básica', '2'),
+('DER101', 'Derecho Informático', '2'),
+('RED301', 'Redes de Computadoras', '3');
 
-insert into grupos (claveM, claveC) values 
-('MAT004', 'CAR003');
-select * from grupos;
+INSERT INTO CARRERAS (clave, nombre) VALUES
+('ISC', 'Ingeniería en Sistemas Computacionales'),
+('LAE', 'Licenciatura en Administración de Empresas'),
+('DER', 'Licenciatura en Derecho'),
+('INF', 'Ingeniería en Informática');
 
+INSERT INTO GRUPOS (claveM, claveC) VALUES
+('MAT101', 'ISC'),
+('MAT102', 'ISC'),
+('INF101', 'ISC'),
+('INF201', 'ISC'),
+('INF301', 'INF'),
+('RED301', 'INF'),
+('ADM101', 'LAE'),
+('ADM201', 'LAE'),
+('DER101', 'DER'),
+('MAT201', 'INF');
+
+SELECT * FROM CARRERAS;
+SELECT * FROM MATERIAS;
+SELECT * FROM GRUPOS;
+DROP TABLE MATERIAS;
 SELECT GRUPOS.idGrupo AS grupo, 
             MATERIAS.clave AS materiaC, 
             MATERIAS.nombre AS materiaN, 
@@ -145,3 +98,4 @@ SELECT GRUPOS.idGrupo AS grupo,
             FROM GRUPOS
             INNER JOIN MATERIAS ON GRUPOS.claveM = MATERIAS.clave
             INNER JOIN CARRERAS ON GRUPOS.claveC = CARRERAS.clave;
+            C:\xampp\htdocs\proyectos\CRUD CRUD
